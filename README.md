@@ -20,6 +20,12 @@
 
 ---
 
+## 🍽️ Firebase 即時點餐系統連線測試
+- **[點餐前台 (顧客點餐頁面)](order.html)**
+- **[點餐後台 (店家監控看板)](order-admin.html)**
+
+---
+
 ## 🛠️ 開發環境需求
 
 * **OS**: Windows (PowerShell)
