@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>極光小館 - 智慧點餐系統</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --secondary: #3b82f6;
+      --accent: #10b981;
+      --bg: #0f172a;
+      --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 100%);
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', 'Outfit', system-ui, -apple-system, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text);
+      min-height: 100-vh;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      background: linear-gradient(to right, #a5b4fc, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    /* Main Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .grid {
+        grid-template-columns: 1.6fr 1fr;
+      }
+    }
+
+    /* Section Styles */
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Glassmorphic Panel */
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 2rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    /* Menu Cards */
+    .menu-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 600px) {
+      .menu-list {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .menu-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(99, 102, 241, 0.3);
+      box-shadow: 0 10px 20px rgba(99, 102, 241, 0.1);
+    }
+
+    .menu-img-container {
+      width: 100%;
+      height: 140px;
+      background: rgba(255, 255, 255, 0.01);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .menu-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .menu-card:hover .menu-img {
+      transform: scale(1.08);
+    }
+
+    .menu-info h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: var(--text);
+    }
+
+    .menu-info p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.4;
+      min-height: 40px;
+    }
+
+    .menu-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .price {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    .counter {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 99px;
+      padding: 0.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .counter button {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      width: 28px;
+      height: 28px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+    }
+
+    .counter button:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .counter span {
+      width: 30px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    /* Cart / Checkout Panel */
+    .checkout-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .form-input {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .cart-summary {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 1.25rem;
+    }
+
+    .cart-item-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      color: #cbd5e1;
+    }
+
+    .cart-item-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .total-row {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 1rem;
+      margin-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .total-price {
+      color: #38bdf8;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+      filter: brightness(1.1);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Live Feed / Orders Board */
+    .orders-board {
+      margin-top: 3rem;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    /* Custom Scrollbar for Orders List */
+    .orders-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .orders-list::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 3px;
+    }
+    .orders-list::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+    .orders-list::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .order-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s;
+      animation: slideInLeft 0.5s ease-out;
+    }
+
+    .order-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .order-meta h4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .order-meta p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .order-details {
+      text-align: right;
+    }
+
+    .order-summary-text {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      margin-bottom: 0.25rem;
+    }
+
+    .order-price {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* Notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: rgba(16, 185, 129, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      animation: slideInRight 0.3s ease-out;
+      font-weight: 500;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 3px solid #fff;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+
+    /* Animations */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>極光小館</h1>
+      <p>極簡精緻．智慧點餐系統 (Firebase 即時連線測試)</p>
+    </header>
+
+    <div class="grid">
+      <!-- Left Panel: Menu -->
+      <section>
+        <h2 class="section-title">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          精選菜單
+        </h2>
+        <div class="panel">
+          <div class="menu-list">
+            <!-- Bubble Tea -->
+            <div class="menu-card" data-id="bubble_tea" data-name="經典珍珠奶茶" data-price="60">
+              <div class="menu-img-container">
+                <img src="bubble_tea.png" alt="經典珍珠奶茶" class="menu-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%236366f1\' stroke-width=\'2\'><path d=\'M6 3h12l-2 18H8L6 3z\'/><path d=\'M12 3v12\'/><circle cx=\'10\' cy=\'16\' r=\'1\' fill=\'%236366f1\'/><circle cx=\'14\' cy=\'15\' r=\'1\' fill=\'%236366f1\'/><circle cx=\'11\' cy=\'18\' r=\'1\' fill=\'%236366f1\'/></svg>'">
+              </div>
+              <div class="menu-info">
+                <h3>經典珍珠奶茶</h3>
+                <p>手作黑糖珍珠與濃厚香醇鮮奶茶的極致融合。</p>
+                <div class="menu-actions">
+                  <span class="price">$60</span>
+                  <div class="counter">
+                    <button class="btn-minus">-</button>
+                    <span class="count">0</span>
+                    <button class="btn-plus">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Beef Noodles -->
+            <div class="menu-card" data-id="beef_noodle" data-name="川味牛肉麵" data-price="150">
+              <div class="menu-img-container">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="1.5">
+                  <path d="M2 12c0 5.5 4.5 10 10 10s10-4.5 10-10H2z"/>
+                  <path d="M12 2v10M8 5v4M16 5v4"/>
+                  <path d="M12 22c-2.5 0-4.5-2-4.5-4.5S9.5 13 12 13s4.5 2 4.5 4.5S14.5 22 12 22z" fill="rgba(99, 102, 241, 0.1)"/>
+                </svg>
+              </div>
+              <div class="menu-info">
+                <h3>川味紅燒牛肉麵</h3>
+                <p>嚴選牛腱心與特製川辣中藥材燉煮多時的黃金湯頭。</p>
+                <div class="menu-actions">
+                  <span class="price">$150</span>
+                  <div class="counter">
+                    <button class="btn-minus">-</button>
+                    <span class="count">0</span>
+                    <button class="btn-plus">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Braised Pork Rice -->
+            <div class="menu-card" data-id="pork_rice" data-name="金牌滷肉飯" data-price="45">
+              <div class="menu-img-container">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="1.5">
+                  <path d="M3 12h18M6 12v6M18 12v6M12 6v6"/>
+                  <path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9z" fill="rgba(99, 102, 241, 0.1)"/>
+                </svg>
+              </div>
+              <div class="menu-info">
+                <h3>金牌黑豬滷肉飯</h3>
+                <p>肥瘦相間的手切黑豬肉丁，慢火熬製，膠質滿滿。</p>
+                <div class="menu-actions">
+                  <span class="price">$45</span>
+                  <div class="counter">
+                    <button class="btn-minus">-</button>
+                    <span class="count">0</span>
+                    <button class="btn-plus">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Scallion Pancake -->
+            <div class="menu-card" data-id="scallion_pancake" data-name="酥脆蔥油餅" data-price="40">
+              <div class="menu-img-container">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M8 12h8M12 8v8"/>
+                  <circle cx="12" cy="12" r="5" fill="rgba(99, 102, 241, 0.1)"/>
+                </svg>
+              </div>
+              <div class="menu-info">
+                <h3>黃金酥脆蔥油餅</h3>
+                <p>層次分明、金黃酥脆的餅皮，散發濃郁手切三星蔥香。</p>
+                <div class="menu-actions">
+                  <span class="price">$40</span>
+                  <div class="counter">
+                    <button class="btn-minus">-</button>
+                    <span class="count">0</span>
+                    <button class="btn-plus">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Order Summary & Checkout -->
+      <section>
+        <h2 class="section-title">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          購物車
+        </h2>
+        <div class="panel">
+          <form id="orderForm" class="checkout-form" onsubmit="return false;">
+            <div class="form-group">
+              <label for="customerName">顧客姓名 / 檯號</label>
+              <input type="text" id="customerName" class="form-input" placeholder="請輸入姓名或桌號，例：3號桌" required autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label>訂單摘要</label>
+              <div class="cart-summary" id="cartSummary">
+                <div style="text-align: center; color: var(--text-muted); padding: 1rem 0;" id="emptySummaryText">
+                  您的購物車還是空的
+                </div>
+                <div id="cartItemsContainer"></div>
+                <div class="total-row">
+                  <span>總計金額</span>
+                  <span class="total-price" id="totalPrice">$0</span>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="btnSubmit" disabled>
+              <span class="spinner" id="spinner"></span>
+              <span id="btnText">確認送出點餐</span>
+            </button>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <!-- Live Orders Board -->
+    <section class="orders-board">
+      <h2 class="section-title">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        即時出餐看板 (Firestore Real-time Feed)
+      </h2>
+      <div class="panel">
+        <div class="orders-list" id="ordersList">
+          <div style="text-align: center; color: var(--text-muted); padding: 2rem 0;" id="noOrdersText">
+            目前尚無訂單，等待第一位顧客點餐...
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Success Toast -->
+  <div class="toast" id="toast">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    <span>點餐成功！已傳送至 Firebase</span>
+  </div>
+
+  <!-- Firebase JavaScript SDK Connection -->
+  <script type="module">
+    // Firebase CDN 模組化引入
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      onSnapshot, 
+      query, 
+      orderBy,
+      serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // 您的 Firebase Web App 配置
+    const firebaseConfig = {
+      projectId: "my-teaching-tools-1f080",
+      appId: "1:675059897837:web:c93e295dc7cabf1828c3e4",
+      storageBucket: "my-teaching-tools-1f080.firebasestorage.app",
+      apiKey: "AIzaSyB1VfFnh7FDl2VGqhYXG05cczgoPN8v2x0",
+      authDomain: "my-teaching-tools-1f080.firebaseapp.com",
+      messagingSenderId: "675059897837"
+    };
+
+    // 初始化 Firebase 與 Firestore
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const ordersColRef = collection(db, "orders");
+
+    // 購物車資料結構
+    const cart = {};
+
+    // 綁定 UI 元素
+    const menuCards = document.querySelectorAll('.menu-card');
+    const cartItemsContainer = document.getElementById('cartItemsContainer');
+    const emptySummaryText = document.getElementById('emptySummaryText');
+    const totalPriceEl = document.getElementById('totalPrice');
+    const btnSubmit = document.getElementById('btnSubmit');
+    const orderForm = document.getElementById('orderForm');
+    const customerNameInput = document.getElementById('customerName');
+    const spinner = document.getElementById('spinner');
+    const btnText = document.getElementById('btnText');
+    const toast = document.getElementById('toast');
+    const ordersList = document.getElementById('ordersList');
+    const noOrdersText = document.getElementById('noOrdersText');
+
+    // 監聽點擊 "+" 或 "-" 按鈕
+    menuCards.forEach(card => {
+      const id = card.getAttribute('data-id');
+      const name = card.getAttribute('data-name');
+      const price = parseInt(card.getAttribute('data-price'));
+      const countEl = card.querySelector('.count');
+      const btnPlus = card.querySelector('.btn-plus');
+      const btnMinus = card.querySelector('.btn-minus');
+
+      btnPlus.addEventListener('click', () => {
+        if (!cart[id]) {
+          cart[id] = { name, price, count: 0 };
+        }
+        cart[id].count++;
+        countEl.textContent = cart[id].count;
+        updateCartSummary();
+      });
+
+      btnMinus.addEventListener('click', () => {
+        if (cart[id] && cart[id].count > 0) {
+          cart[id].count--;
+          countEl.textContent = cart[id].count;
+          if (cart[id].count === 0) {
+            delete cart[id];
+          }
+          updateCartSummary();
+        }
+      });
+    });
+
+    // 更新購物車摘要與金額顯示
+    function updateCartSummary() {
+      cartItemsContainer.innerHTML = '';
+      let total = 0;
+      let hasItems = false;
+
+      for (const id in cart) {
+        hasItems = true;
+        const item = cart[id];
+        const subtotal = item.price * item.count;
+        total += subtotal;
+
+        const row = document.createElement('div');
+        row.className = 'cart-item-row';
+        row.innerHTML = `
+          <span>${item.name} x ${item.count}</span>
+          <span>$${subtotal}</span>
+        `;
+        cartItemsContainer.appendChild(row);
+      }
+
+      totalPriceEl.textContent = `$${total}`;
+      
+      if (hasItems) {
+        emptySummaryText.style.display = 'none';
+        btnSubmit.disabled = false;
+      } else {
+        emptySummaryText.style.display = 'block';
+        btnSubmit.disabled = true;
+      }
+    }
+
+    // 處理提交表單
+    orderForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const customerName = customerNameInput.value.trim();
+      if (!customerName) return;
+
+      // 建立點單明細
+      const itemsList = [];
+      let totalAmount = 0;
+      for (const id in cart) {
+        itemsList.push({
+          itemId: id,
+          name: cart[id].name,
+          price: cart[id].price,
+          count: cart[id].count
+        });
+        totalAmount += cart[id].price * cart[id].count;
+      }
+
+      if (itemsList.length === 0) return;
+
+      // 鎖定 UI 按鈕
+      btnSubmit.disabled = true;
+      spinner.style.display = 'inline-block';
+      btnText.textContent = '傳送訂單中...';
+
+      try {
+        // 送出資料至 Firebase Firestore
+        await addDoc(ordersColRef, {
+          customerName: customerName,
+          items: itemsList,
+          totalAmount: totalAmount,
+          timestamp: serverTimestamp()
+        });
+
+        // 成功後重設購物車與 UI
+        resetCart();
+        showToast();
+      } catch (err) {
+        console.error("Firebase 寫入失敗: ", err);
+        alert("點餐失敗，請確認 Firebase 資料庫連線是否正常。");
+      } finally {
+        // 恢復 UI 按鈕狀態
+        btnSubmit.disabled = true;
+        spinner.style.display = 'none';
+        btnText.textContent = '確認送出點餐';
+      }
+    });
+
+    // 重設購物車狀態
+    function resetCart() {
+      for (const id in cart) {
+        delete cart[id];
+      }
+      menuCards.forEach(card => {
+        card.querySelector('.count').textContent = '0';
+      });
+      customerNameInput.value = '';
+      updateCartSummary();
+    }
+
+    // 顯示成功吐司訊息
+    function showToast() {
+      toast.style.display = 'flex';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+
+    // 即時監聽 (Real-time Feed) Firestore 的 orders 集合數據
+    // 使用 query 依時間戳由新到舊排序
+    const q = query(ordersColRef, orderBy("timestamp", "desc"));
+    
+    onSnapshot(q, (snapshot) => {
+      // 清空舊的列表
+      ordersList.innerHTML = '';
+      
+      if (snapshot.empty) {
+        ordersList.appendChild(noOrdersText);
+        return;
+      }
+
+      noOrdersText.style.display = 'none';
+
+      snapshot.forEach(doc => {
+        const order = doc.data();
+        
+        // 格式化品項明細字串
+        const itemsSummary = order.items
+          .map(item => `${item.name} x ${item.count}`)
+          .join(', ');
+
+        // 處理時間格式
+        let timeStr = '剛才';
+        if (order.timestamp) {
+          const date = order.timestamp.toDate();
+          timeStr = date.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+
+        const itemEl = document.createElement('div');
+        itemEl.className = 'order-item';
+        itemEl.innerHTML = `
+          <div class="order-meta">
+            <h4>${order.customerName}</h4>
+            <p>下單時間：${timeStr}</p>
+          </div>
+          <div class="order-details">
+            <div class="order-summary-text">${itemsSummary}</div>
+            <div class="order-price">$${order.totalAmount}</div>
+          </div>
+        `;
+        ordersList.appendChild(itemEl);
+      });
+    }, (error) => {
+      console.error("Firestore 即時監聽出錯: ", error);
+    });
+  </script>
+</body>
+</html>
