@@ -14,6 +14,7 @@
 | #01 | 📖 [01-連接-NotebookLM.md](01-連接-NotebookLM.md) | 整合與連接 Google NotebookLM 知識庫 | 已就緒 ✅ |
 | #02 | 📖 [02-連接-GitHub.md](02-連接-GitHub.md) | 配置 GitHub 帳號並將本專案推播上線 | 已就緒 ✅ |
 | #03 | 📖 [03-建立第二大腦-Obsidian.md](03-建立第二大腦-Obsidian.md) | 建立 Obsidian 數位筆記與知識管理系統 | 已就緒 ✅ |
+| #04.5 | 📖 [04.5-連接-Firebase-資料庫.md](04.5-連接-Firebase-資料庫.md) | 整合與連接 Firebase NoSQL 資料庫 | 已就緒 ✅ |
 
 > **提示**：您可以直接對 Antigravity 說：「*請幫我執行 02-連接-GitHub 懶人包*」，Antigravity 就會自動讀取該檔案並帶領您完成步驟。
 
